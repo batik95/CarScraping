@@ -1,0 +1,783 @@
+/* CarScraping - Responsive Design System
+ * Advanced responsive styles for all device sizes
+ */
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+/* 
+   Breakpoint Scale:
+   - xs: 0-479px (Mobile Portrait)
+   - sm: 480-767px (Mobile Landscape) 
+   - md: 768-1023px (Tablet)
+   - lg: 1024-1279px (Desktop)
+   - xl: 1280px+ (Large Desktop)
+*/
+
+/* ============================================
+   MOBILE FIRST - BASE STYLES (0-479px)
+   ============================================ */
+.container-fluid {
+  padding: var(--space-sm);
+}
+
+.dashboard-layout {
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+}
+
+.sidebar {
+  width: 100%;
+  position: static;
+  margin-bottom: var(--space-lg);
+}
+
+.kpi-grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+.charts-grid {
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+/* Navigation adjustments for mobile */
+.navbar-automotive .navbar-collapse {
+  background: rgba(30, 58, 138, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.navbar-automotive .nav-link {
+  padding: var(--space-md) var(--space-lg) !important;
+  margin: var(--space-xs) 0;
+  border-radius: var(--radius-md);
+}
+
+/* Cards responsive behavior */
+.card-modern {
+  margin-bottom: var(--space-lg);
+}
+
+.card-modern .card-header,
+.card-modern .card-body {
+  padding: var(--space-lg);
+}
+
+/* Table responsive */
+.table-responsive {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.table-modern thead th,
+.table-modern tbody td {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+/* Hide less important columns on mobile */
+.table-modern .col-optional {
+  display: none;
+}
+
+/* Form adjustments */
+.form-control-modern,
+.form-select-modern {
+  padding: var(--space-md);
+  font-size: 16px; /* Prevent zoom on iOS */
+}
+
+.filter-group {
+  margin-bottom: var(--space-md);
+}
+
+/* Button adjustments */
+.btn-modern {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: var(--space-sm);
+}
+
+.btn-group-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.btn-group-mobile .btn-modern {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   MOBILE LANDSCAPE (480-767px)
+   ============================================ */
+@media (min-width: 480px) {
+  .container-fluid {
+    padding: var(--space-md);
+  }
+  
+  .dashboard-layout {
+    padding: var(--space-md);
+    gap: var(--space-lg);
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+  
+  .kpi-card {
+    padding: var(--space-lg);
+  }
+  
+  .kpi-value {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  .table-modern thead th,
+  .table-modern tbody td {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-base);
+  }
+  
+  /* Show one more optional column */
+  .table-modern .col-optional:first-of-type {
+    display: table-cell;
+  }
+  
+  .btn-modern {
+    width: auto;
+  }
+  
+  .btn-group-mobile {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+/* ============================================
+   TABLET (768-1023px)
+   ============================================ */
+@media (min-width: 768px) {
+  .container-fluid {
+    padding: var(--space-lg);
+  }
+  
+  .dashboard-layout {
+    padding: var(--space-lg);
+    gap: var(--space-xl);
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+  
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+  
+  .chart-container {
+    height: 350px;
+  }
+  
+  .chart-container.large {
+    height: 450px;
+  }
+  
+  /* Show more optional columns */
+  .table-modern .col-optional {
+    display: table-cell;
+  }
+  
+  .navbar-automotive .navbar-collapse {
+    background: none;
+    backdrop-filter: none;
+    border-radius: 0;
+    margin-top: 0;
+    padding: 0;
+  }
+  
+  .navbar-automotive .nav-link {
+    margin: 0 var(--space-xs);
+  }
+  
+  .card-modern .card-header,
+  .card-modern .card-body {
+    padding: var(--space-xl);
+  }
+  
+  .form-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .form-row.two-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================
+   DESKTOP (1024-1279px)
+   ============================================ */
+@media (min-width: 1024px) {
+  .container-fluid {
+    padding: var(--space-xl);
+  }
+  
+  .dashboard-layout {
+    flex-direction: row;
+    padding: var(--space-xl);
+    gap: var(--space-2xl);
+  }
+  
+  .sidebar {
+    width: 320px;
+    position: sticky;
+    top: var(--space-xl);
+    height: fit-content;
+  }
+  
+  .main-content {
+    flex: 1;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .charts-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+  
+  .chart-container {
+    height: 400px;
+  }
+  
+  .chart-container.large {
+    height: 500px;
+  }
+  
+  .chart-container.small {
+    height: 300px;
+  }
+  
+  /* Hover effects are more prominent on desktop */
+  .card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .kpi-card:hover {
+    transform: translateY(-6px);
+  }
+  
+  .btn-modern:hover {
+    transform: translateY(-2px);
+  }
+  
+  .form-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .form-row.two-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-row.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   LARGE DESKTOP (1280px+)
+   ============================================ */
+@media (min-width: 1280px) {
+  .container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .sidebar {
+    width: 360px;
+  }
+  
+  .chart-container {
+    height: 450px;
+  }
+  
+  .chart-container.large {
+    height: 600px;
+  }
+  
+  .charts-advanced-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+  
+  .charts-advanced-grid .chart-large {
+    grid-column: span 2;
+  }
+}
+
+/* ============================================
+   ULTRA WIDE (1600px+)
+   ============================================ */
+@media (min-width: 1600px) {
+  .container-fluid {
+    max-width: 1600px;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .charts-grid {
+    grid-template-columns: 3fr 2fr;
+  }
+  
+  .charts-advanced-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   SIDEBAR RESPONSIVE BEHAVIOR
+   ============================================ */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-fast);
+}
+
+.sidebar-toggle:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+@media (max-width: 1023px) {
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 300px;
+    height: 100vh;
+    z-index: 1000;
+    background: var(--background-secondary);
+    transition: left var(--transition-normal);
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .sidebar.show {
+    left: 0;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+  }
+  
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .main-content {
+    transition: margin-left var(--transition-normal);
+  }
+  
+  .main-content.sidebar-open {
+    margin-left: 0;
+  }
+}
+
+/* ============================================
+   TABLE RESPONSIVE ENHANCEMENTS
+   ============================================ */
+@media (max-width: 767px) {
+  .table-responsive-stack {
+    display: block;
+  }
+  
+  .table-responsive-stack thead {
+    display: none;
+  }
+  
+  .table-responsive-stack tbody,
+  .table-responsive-stack tr,
+  .table-responsive-stack td {
+    display: block;
+  }
+  
+  .table-responsive-stack tr {
+    background: var(--background-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+  }
+  
+  .table-responsive-stack td {
+    padding: var(--space-sm) 0;
+    border: none;
+    position: relative;
+    padding-left: 120px;
+  }
+  
+  .table-responsive-stack td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    top: var(--space-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100px;
+  }
+  
+  .table-responsive-stack .action-buttons {
+    padding-left: 0;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+    margin-top: var(--space-md);
+  }
+  
+  .table-responsive-stack .action-buttons::before {
+    display: none;
+  }
+}
+
+/* ============================================
+   MODAL RESPONSIVE BEHAVIOR
+   ============================================ */
+@media (max-width: 767px) {
+  .modal-dialog {
+    margin: var(--space-lg);
+    max-width: none;
+  }
+  
+  .modal-content {
+    border-radius: var(--radius-lg);
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--space-lg);
+  }
+  
+  .modal-title {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 479px) {
+  .modal-dialog {
+    margin: var(--space-sm);
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--space-md);
+  }
+  
+  .modal-title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ============================================
+   TOAST RESPONSIVE POSITIONING
+   ============================================ */
+.toast-container {
+  position: fixed;
+  z-index: 9999;
+}
+
+@media (min-width: 768px) {
+  .toast-container {
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 767px) {
+  .toast-container {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
+}
+
+/* ============================================
+   CHART RESPONSIVE BEHAVIOR
+   ============================================ */
+@media (max-width: 1023px) {
+  .chart-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+  
+  .chart-control-group {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .chart-export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .chart-title {
+    font-size: var(--font-size-base);
+  }
+  
+  .chart-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .chart-container.small {
+    height: 200px;
+  }
+  
+  .chart-container.large {
+    height: 300px;
+  }
+}
+
+/* ============================================
+   FORM RESPONSIVE BEHAVIOR
+   ============================================ */
+@media (max-width: 767px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-inline .form-control-modern,
+  .form-inline .form-select-modern,
+  .form-inline .btn-modern {
+    margin-bottom: var(--space-sm);
+    width: 100%;
+  }
+  
+  .form-inline .btn-modern {
+    margin-bottom: 0;
+  }
+}
+
+/* ============================================
+   NAVIGATION RESPONSIVE ENHANCEMENTS
+   ============================================ */
+@media (max-width: 1023px) {
+  .navbar-automotive .navbar-nav {
+    margin-top: var(--space-md);
+  }
+  
+  .navbar-automotive .navbar-text {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ============================================
+   SPACING RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 479px) {
+  :root {
+    --space-xl: 1rem;
+    --space-2xl: 1.5rem;
+    --space-3xl: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --space-xl: 2rem;
+    --space-2xl: 2.5rem;
+    --space-3xl: 4rem;
+  }
+}
+
+/* ============================================
+   FONT SIZE RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 479px) {
+  :root {
+    --font-size-xl: 1.125rem;
+    --font-size-2xl: 1.25rem;
+    --font-size-3xl: 1.5rem;
+    --font-size-4xl: 1.875rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --font-size-xl: 1.375rem;
+    --font-size-2xl: 1.625rem;
+    --font-size-3xl: 2.125rem;
+    --font-size-4xl: 2.625rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY RESPONSIVE FEATURES
+   ============================================ */
+@media (max-width: 767px) {
+  /* Larger touch targets for mobile */
+  .btn-modern {
+    min-height: 44px;
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .form-control-modern,
+  .form-select-modern {
+    min-height: 44px;
+  }
+  
+  .nav-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ============================================
+   PRINT RESPONSIVE STYLES
+   ============================================ */
+@media print {
+  .sidebar,
+  .navbar-automotive,
+  .btn-modern,
+  .toast-container,
+  .sidebar-toggle,
+  .chart-controls {
+    display: none !important;
+  }
+  
+  .dashboard-layout {
+    flex-direction: column;
+    padding: 0;
+    gap: 1rem;
+  }
+  
+  .main-content {
+    width: 100% !important;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card-modern {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .chart-container {
+    height: 300px !important;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION RESPONSIVE
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .main-content,
+  .modal-dialog {
+    transition: none !important;
+  }
+  
+  .kpi-card:hover,
+  .card-modern:hover,
+  .btn-modern:hover {
+    transform: none !important;
+  }
+}
