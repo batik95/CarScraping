@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>CarScraping</Name>
+  <Repository>batik95/carscraping</Repository>
+  <Registry>https://hub.docker.com/r/batik95/carscraping</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/batik95/CarScraping</Support>
+  <Project>https://github.com/batik95/CarScraping</Project>
+  <Overview>Car Tracking Tool per monitorare auto su AutoScout24.it con dashboard analytics avanzata</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8787]</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/batik95/CarScraping/main/unraid/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Web Port" Target="8787" Default="8787" Mode="tcp" Description="Porta per accesso web interface" Type="Port" Display="always" Required="true" Mask="false">8787</Config>
+  <Config Name="Database Port" Target="5432" Default="" Mode="tcp" Description="Porta PostgreSQL (opzionale se database esterno)" Type="Port" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Config Directory" Target="/config" Default="/mnt/user/appdata/carscraping/config" Mode="rw" Description="Directory configurazione app" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/config</Config>
+  <Config Name="Data Directory" Target="/data" Default="/mnt/user/appdata/carscraping/data" Mode="rw" Description="Directory database PostgreSQL" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/data</Config>
+  <Config Name="Logs Directory" Target="/logs" Default="/mnt/user/appdata/carscraping/logs" Mode="rw" Description="Directory log applicazione" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/logs</Config>
+  <Config Name="Scraping Interval" Target="SCRAPING_INTERVAL" Default="24h" Mode="" Description="Intervallo scraping (es: 24h, 12h, 6h)" Type="Variable" Display="always" Required="false" Mask="false">24h</Config>
+  <Config Name="Log Level" Target="LOG_LEVEL" Default="INFO" Mode="" Description="Livello logging (DEBUG, INFO, WARNING, ERROR)" Type="Variable" Display="advanced" Required="false" Mask="false">INFO</Config>
+  <Config Name="Database Host" Target="DB_HOST" Default="localhost" Mode="" Description="Host database PostgreSQL" Type="Variable" Display="advanced" Required="false" Mask="false">localhost</Config>
+</Container>

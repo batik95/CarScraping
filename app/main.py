@@ -7,7 +7,7 @@ from pathlib import Path
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import cars, searches, analytics
+from app.api import cars, searches, analytics, charts
 from app.services.scheduler import scheduler
 
 # Configure logging
@@ -55,6 +55,7 @@ templates = Jinja2Templates(directory="app/templates")
 app.include_router(cars.router, prefix="/api/cars", tags=["cars"])
 app.include_router(searches.router, prefix="/api/searches", tags=["searches"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
+app.include_router(charts.router, prefix="/api/charts", tags=["charts"])
 
 @app.get("/")
 async def read_root(request: Request):
@@ -68,4 +69,4 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.web_host, port=settings.web_port)

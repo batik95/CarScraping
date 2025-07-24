@@ -1,0 +1,767 @@
+/* CarScraping - Advanced Chart Styling
+ * Chart.js v4 Custom Styling & Components
+ */
+
+/* ============================================
+   CHART.JS GLOBAL CONFIGURATION
+   ============================================ */
+.chart-wrapper {
+  position: relative;
+  background: var(--background-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--space-xl);
+}
+
+.chart-wrapper.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.chart-wrapper.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: var(--radius-full);
+  animation: loading-spin 1s linear infinite;
+  z-index: 10;
+}
+
+/* ============================================
+   CHART HEADERS & CONTROLS
+   ============================================ */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.chart-title i {
+  color: var(--primary-color);
+  font-size: var(--font-size-xl);
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.chart-control-group {
+  display: flex;
+  background: var(--background-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xs);
+  border: 1px solid var(--border-color);
+}
+
+.chart-control-btn {
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.chart-control-btn:hover {
+  color: var(--primary-color);
+  background: rgba(30, 58, 138, 0.1);
+}
+
+.chart-control-btn.active {
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-export-btn {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.chart-export-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================
+   CHART CONTAINERS
+   ============================================ */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin: var(--space-lg) 0;
+}
+
+.chart-container.small {
+  height: 250px;
+}
+
+.chart-container.large {
+  height: 500px;
+}
+
+.chart-container canvas {
+  border-radius: var(--radius-lg);
+}
+
+/* Price Trend Chart */
+.price-trend-chart {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.02), rgba(16, 185, 129, 0.02));
+}
+
+/* Scatter Plot Chart */
+.scatter-plot-chart {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.02), rgba(239, 68, 68, 0.02));
+}
+
+/* Geographic Heatmap */
+.geographic-chart {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.02), rgba(30, 58, 138, 0.02));
+}
+
+/* Histogram Chart */
+.histogram-chart {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(245, 158, 11, 0.02));
+}
+
+/* Radar Chart */
+.radar-chart {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.02), rgba(236, 72, 153, 0.02));
+}
+
+/* ============================================
+   CHART LEGENDS & TOOLTIPS
+   ============================================ */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+}
+
+.legend-item:hover {
+  background: var(--background-tertiary);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--background-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.legend-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.legend-value {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin-left: var(--space-xs);
+}
+
+/* Custom Tooltip Styling (Applied via Chart.js) */
+.chartjs-tooltip {
+  background: var(--background-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-family-primary) !important;
+  padding: var(--space-md) !important;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.chartjs-tooltip-title {
+  font-weight: 600 !important;
+  font-size: var(--font-size-sm) !important;
+  color: var(--text-primary) !important;
+  margin-bottom: var(--space-xs) !important;
+  padding-bottom: var(--space-xs) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.chartjs-tooltip-body {
+  font-size: var(--font-size-sm) !important;
+  color: var(--text-secondary) !important;
+}
+
+.chartjs-tooltip-body-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--space-xs) !important;
+  margin: var(--space-xs) 0 !important;
+}
+
+.chartjs-tooltip-color-box {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--background-secondary) !important;
+}
+
+/* ============================================
+   CHART SPECIFIC STYLES
+   ============================================ */
+
+/* Price Trend Line Chart */
+.price-trend-wrapper {
+  background: linear-gradient(135deg, var(--background-secondary), rgba(30, 58, 138, 0.02));
+}
+
+.price-trend-wrapper .chart-title i {
+  background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Price vs Mileage Scatter */
+.scatter-plot-wrapper {
+  background: linear-gradient(135deg, var(--background-secondary), rgba(245, 158, 11, 0.02));
+}
+
+.scatter-plot-wrapper .chart-title i {
+  background: linear-gradient(45deg, var(--accent-color), var(--error-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Geographic Heatmap */
+.geographic-wrapper {
+  background: linear-gradient(135deg, var(--background-secondary), rgba(6, 182, 212, 0.02));
+  position: relative;
+}
+
+.geographic-wrapper .chart-title i {
+  background: linear-gradient(45deg, var(--info-color), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.geographic-legend {
+  position: absolute;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.geographic-legend-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.geographic-legend-scale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.geographic-legend-gradient {
+  width: 60px;
+  height: 8px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--info-color), var(--primary-color), var(--error-color));
+}
+
+/* Price Distribution Histogram */
+.histogram-wrapper {
+  background: linear-gradient(135deg, var(--background-secondary), rgba(16, 185, 129, 0.02));
+}
+
+.histogram-wrapper .chart-title i {
+  background: linear-gradient(45deg, var(--success-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.histogram-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.histogram-stat {
+  text-align: center;
+}
+
+.histogram-stat-value {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+}
+
+.histogram-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--space-xs);
+}
+
+/* Brand Comparison Radar */
+.radar-wrapper {
+  background: linear-gradient(135deg, var(--background-secondary), rgba(139, 92, 246, 0.02));
+}
+
+.radar-wrapper .chart-title i {
+  background: linear-gradient(45deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.radar-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.radar-metric {
+  text-align: center;
+  padding: var(--space-sm);
+  background: var(--background-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.radar-metric-name {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-xs);
+}
+
+.radar-metric-value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ============================================
+   CHART ANNOTATIONS & MARKERS
+   ============================================ */
+.chart-annotation {
+  position: absolute;
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  box-shadow: var(--shadow-md);
+  font-size: var(--font-size-xs);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.chart-annotation.highlight {
+  border-color: var(--accent-color);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.chart-annotation.warning {
+  border-color: var(--error-color);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.chart-annotation-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.chart-annotation-text {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Chart markers for significant events */
+.chart-marker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--background-secondary);
+  z-index: 5;
+}
+
+.chart-marker.event {
+  background: var(--accent-color);
+}
+
+.chart-marker.anomaly {
+  background: var(--error-color);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* ============================================
+   INTERACTIVE CHART FEATURES
+   ============================================ */
+.chart-zoom-controls {
+  position: absolute;
+  top: var(--space-lg);
+  left: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  z-index: 10;
+}
+
+.chart-zoom-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-color);
+  background: var(--background-secondary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-zoom-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: rgba(30, 58, 138, 0.05);
+}
+
+.chart-crosshair {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.chart-crosshair-x {
+  width: 1px;
+  height: 100%;
+  background: var(--primary-color);
+  opacity: 0.5;
+}
+
+.chart-crosshair-y {
+  width: 100%;
+  height: 1px;
+  background: var(--primary-color);
+  opacity: 0.5;
+}
+
+/* ============================================
+   REAL-TIME CHART UPDATES
+   ============================================ */
+.chart-live-indicator {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  z-index: 10;
+}
+
+.chart-live-indicator.active {
+  border-color: var(--success-color);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.chart-live-indicator.inactive {
+  color: var(--text-muted);
+}
+
+.chart-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--success-color);
+}
+
+.chart-live-indicator.active .chart-live-dot {
+  animation: pulse-dot 1s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ============================================
+   CHART ERROR STATES
+   ============================================ */
+.chart-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.chart-error-icon {
+  font-size: var(--font-size-4xl);
+  color: var(--error-color);
+  margin-bottom: var(--space-lg);
+}
+
+.chart-error-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.chart-error-message {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+.chart-error-retry {
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--primary-color);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chart-error-retry:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   RESPONSIVE CHART DESIGN
+   ============================================ */
+@media (max-width: 1024px) {
+  .chart-container {
+    height: 350px;
+  }
+  
+  .chart-container.large {
+    height: 400px;
+  }
+  
+  .chart-controls {
+    flex-wrap: wrap;
+  }
+  
+  .chart-legend {
+    gap: var(--space-sm);
+  }
+  
+  .histogram-stats {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+  
+  .radar-metrics {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+    margin: var(--space-md) 0;
+  }
+  
+  .chart-container.small {
+    height: 200px;
+  }
+  
+  .chart-container.large {
+    height: 350px;
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .chart-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .chart-control-group {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .chart-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  .chart-zoom-controls {
+    position: static;
+    flex-direction: row;
+    margin-bottom: var(--space-md);
+  }
+  
+  .geographic-legend {
+    position: static;
+    margin-top: var(--space-md);
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-wrapper {
+    padding: var(--space-md);
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .chart-header {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+  }
+  
+  .chart-title {
+    font-size: var(--font-size-base);
+  }
+  
+  .chart-control-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .histogram-stats,
+  .radar-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+}
+
+/* ============================================
+   PRINT STYLES FOR CHARTS
+   ============================================ */
+@media print {
+  .chart-controls,
+  .chart-zoom-controls,
+  .chart-live-indicator {
+    display: none !important;
+  }
+  
+  .chart-wrapper {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .chart-container {
+    height: 300px !important;
+  }
+}

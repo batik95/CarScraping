@@ -1,229 +1,469 @@
 {% extends "base.html" %}
 
+{% block title %}CarScraping - Advanced Automotive Analytics Dashboard{% endblock %}
+
 {% block content %}
-<!-- Search Filters -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
+<div class="dashboard-layout">
+    <!-- Sidebar with Filters -->
+    <aside class="sidebar" id="sidebar">
+        <div class="filters-section">
+            <div class="filters-header">
+                <h5 class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    Filtri Avanzati
+                </h5>
+            </div>
+            
+            <!-- Quick Search -->
+            <div class="filter-group">
+                <label class="filter-label">Ricerca Rapida</label>
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="quick-search" 
+                           placeholder="Cerca marca, modello..." aria-label="Ricerca rapida">
+                    <i class="search-icon fas fa-search"></i>
+                    <button class="search-clear" style="display: none;" onclick="clearQuickSearch()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Saved Search Selection -->
+            <div class="filter-group">
+                <label for="filter-search" class="filter-label">Ricerca Salvata</label>
+                <select class="form-select-modern" id="filter-search" onchange="applySearchFilter()">
+                    <option value="">Tutte le ricerche</option>
+                </select>
+            </div>
+
+            <!-- Vehicle Filters -->
+            <div class="filter-group">
+                <label for="filter-brand" class="filter-label">Marca</label>
+                <select class="form-select-modern" id="filter-brand" onchange="updateModels(); applyFilters()">
+                    <option value="">Tutte le marche</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-model" class="filter-label">Modello</label>
+                <select class="form-select-modern" id="filter-model" onchange="applyFilters()">
+                    <option value="">Tutti i modelli</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-fuel" class="filter-label">Alimentazione</label>
+                <select class="form-select-modern" id="filter-fuel" onchange="applyFilters()">
+                    <option value="">Tutte</option>
+                    <option value="benzina">Benzina</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="elettrica">Elettrica</option>
+                    <option value="ibrida">Ibrida</option>
+                    <option value="gpl">GPL</option>
+                    <option value="metano">Metano</option>
+                </select>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-group">
+                <label class="filter-label">Prezzo (€)</label>
+                <div class="range-slider-container">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-price-min" 
+                                   placeholder="Min" onchange="applyFilters()">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-price-max" 
+                                   placeholder="Max" onchange="applyFilters()">
+                        </div>
+                    </div>
+                    <div id="filter-price-range" class="mb-2"></div>
+                    <div class="range-values">
+                        <span id="filter-price-min-display">€0</span>
+                        <span id="filter-price-max-display">€100.000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year Range -->
+            <div class="filter-group">
+                <label class="filter-label">Anno</label>
+                <div class="range-slider-container">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-year-min" 
+                                   placeholder="Da" onchange="applyFilters()">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-year-max" 
+                                   placeholder="A" onchange="applyFilters()">
+                        </div>
+                    </div>
+                    <div id="filter-year-range" class="mb-2"></div>
+                    <div class="range-values">
+                        <span id="filter-year-min-display">2000</span>
+                        <span id="filter-year-max-display">2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mileage Range -->
+            <div class="filter-group">
+                <label class="filter-label">Chilometraggio (km)</label>
+                <div class="range-slider-container">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-mileage-min" 
+                                   placeholder="Min" onchange="applyFilters()">
+                        </div>
+                        <div class="col-6">
+                            <input type="number" class="form-control-modern" id="filter-mileage-max" 
+                                   placeholder="Max" onchange="applyFilters()">
+                        </div>
+                    </div>
+                    <div id="filter-mileage-range" class="mb-2"></div>
+                    <div class="range-values">
+                        <span id="filter-mileage-min-display">0 km</span>
+                        <span id="filter-mileage-max-display">200.000 km</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Filters Display -->
+            <div class="filter-group">
+                <label class="filter-label">Filtri Attivi</label>
+                <div class="filter-tags" id="active-filters"></div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="filter-group">
+                <button class="btn-modern btn-secondary-modern w-100 mb-2" onclick="clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Cancella Filtri
+                </button>
+                <button class="btn-modern btn-primary-modern w-100" onclick="runSearch()">
+                    <i class="fas fa-play"></i>
+                    Esegui Scraping
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid" id="kpi-grid">
+            <!-- Total Listings Card -->
+            <div class="kpi-card primary fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Annunci Totali</div>
+                        <div class="kpi-value" id="kpi-total-cars">0</div>
+                        <div class="kpi-change neutral" id="kpi-total-change">
+                            <i class="fas fa-minus"></i>
+                            <span>Nessun cambiamento</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                </div>
+                <div class="kpi-sparkline" id="total-cars-sparkline"></div>
+            </div>
+
+            <!-- Average Price Card -->
+            <div class="kpi-card success fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Prezzo Medio</div>
+                        <div class="kpi-value" id="kpi-avg-price">€0</div>
+                        <div class="kpi-change neutral" id="kpi-price-change">
+                            <i class="fas fa-minus"></i>
+                            <span>Nessun cambiamento</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-euro-sign"></i>
+                    </div>
+                </div>
+                <div class="kpi-sparkline" id="avg-price-sparkline"></div>
+            </div>
+
+            <!-- Best Deals Card -->
+            <div class="kpi-card warning fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Migliori Affari</div>
+                        <div class="kpi-value" id="kpi-best-deals">0</div>
+                        <div class="kpi-change positive" id="kpi-deals-change">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Sotto media mercato</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                </div>
+                <div class="kpi-sparkline" id="best-deals-sparkline"></div>
+            </div>
+
+            <!-- Geographic Distribution -->
+            <div class="kpi-card info fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Top Regione</div>
+                        <div class="kpi-value" id="kpi-top-region">N/A</div>
+                        <div class="kpi-change neutral" id="kpi-region-change">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="kpi-region-price">€0 medio</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-map"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age Distribution -->
+            <div class="kpi-card primary fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Età Media</div>
+                        <div class="kpi-value" id="kpi-avg-age">0 anni</div>
+                        <div class="kpi-change neutral" id="kpi-age-change">
+                            <i class="fas fa-calendar"></i>
+                            <span>Basato su anno</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+                <div class="kpi-sparkline" id="age-distribution-sparkline"></div>
+            </div>
+
+            <!-- Scraping Status -->
+            <div class="kpi-card success fade-in">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Ultimo Scraping</div>
+                        <div class="kpi-value" id="kpi-last-scraping">Mai</div>
+                        <div class="kpi-change positive" id="kpi-scraping-change">
+                            <i class="fas fa-check"></i>
+                            <span id="kpi-new-entries">0 nuovi</span>
+                        </div>
+                    </div>
+                    <div class="kpi-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+                <div class="progress-modern mt-3">
+                    <div class="progress-bar" id="scraping-progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Price Trend Chart (Large) -->
+            <div class="chart-wrapper price-trend-wrapper fade-in">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-line"></i>
+                        Trend Prezzi nel Tempo
+                    </h5>
+                    <div class="chart-controls">
+                        <div class="chart-control-group">
+                            <button class="chart-control-btn active" data-period="7d">7G</button>
+                            <button class="chart-control-btn" data-period="30d">30G</button>
+                            <button class="chart-control-btn" data-period="90d">90G</button>
+                            <button class="chart-control-btn" data-period="1y">1A</button>
+                        </div>
+                        <button class="chart-export-btn" onclick="exportChart('price-trend')">
+                            <i class="fas fa-download"></i>
+                            <span>Esporta</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="price-trend-chart"></canvas>
+                </div>
+                <div class="chart-live-indicator active">
+                    <div class="chart-live-dot"></div>
+                    <span>Live</span>
+                </div>
+            </div>
+
+            <!-- Distribution Charts -->
+            <div class="chart-wrapper scatter-plot-wrapper fade-in">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-scatter"></i>
+                        Prezzo vs Chilometraggio
+                    </h5>
+                    <div class="chart-controls">
+                        <button class="chart-export-btn" onclick="exportChart('price-mileage')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container small">
+                    <canvas id="price-mileage-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Charts Grid -->
+        <div class="charts-grid">
+            <!-- Geographic Heatmap -->
+            <div class="chart-wrapper geographic-wrapper fade-in">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-map"></i>
+                        Distribuzione Geografica
+                    </h5>
+                    <div class="chart-controls">
+                        <div class="chart-control-group">
+                            <button class="chart-control-btn active" data-view="regions">Regioni</button>
+                            <button class="chart-control-btn" data-view="provinces">Province</button>
+                        </div>
+                        <button class="chart-export-btn" onclick="exportChart('geographic')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="geographic-chart"></canvas>
+                </div>
+                <div class="geographic-legend">
+                    <div class="geographic-legend-title">Prezzo Medio</div>
+                    <div class="geographic-legend-scale">
+                        <span>Basso</span>
+                        <div class="geographic-legend-gradient"></div>
+                        <span>Alto</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Distribution Histogram -->
+            <div class="chart-wrapper histogram-wrapper fade-in">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Distribuzione Prezzi
+                    </h5>
+                    <div class="chart-controls">
+                        <button class="chart-export-btn" onclick="exportChart('histogram')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container small">
+                    <canvas id="price-histogram-chart"></canvas>
+                </div>
+                <div class="histogram-stats">
+                    <div class="histogram-stat">
+                        <span class="histogram-stat-value" id="hist-mean">€0</span>
+                        <span class="histogram-stat-label">Media</span>
+                    </div>
+                    <div class="histogram-stat">
+                        <span class="histogram-stat-value" id="hist-median">€0</span>
+                        <span class="histogram-stat-label">Mediana</span>
+                    </div>
+                    <div class="histogram-stat">
+                        <span class="histogram-stat-value" id="hist-std">€0</span>
+                        <span class="histogram-stat-label">Dev. Std</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mileage Analytics -->
+        <div class="card-modern fade-in">
             <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-filter"></i> Filtri Ricerca
+                <h5 class="card-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Analisi per Chilometraggio
                 </h5>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-3">
-                        <label for="filter-search" class="form-label">Ricerca Salvata</label>
-                        <select class="form-select" id="filter-search" onchange="applySearchFilter()">
-                            <option value="">Tutte le ricerche</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="filter-brand" class="form-label">Marca</label>
-                        <select class="form-select" id="filter-brand" onchange="updateModels(); applyFilters()">
-                            <option value="">Tutte le marche</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="filter-model" class="form-label">Modello</label>
-                        <select class="form-select" id="filter-model" onchange="applyFilters()">
-                            <option value="">Tutti i modelli</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="filter-fuel" class="form-label">Alimentazione</label>
-                        <select class="form-select" id="filter-fuel" onchange="applyFilters()">
-                            <option value="">Tutte</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Prezzo (€)</label>
-                        <div class="d-flex align-items-center">
-                            <input type="number" class="form-control me-2" id="filter-price-min" placeholder="Min" onchange="applyFilters()">
-                            <span class="mx-2">-</span>
-                            <input type="number" class="form-control ms-2" id="filter-price-max" placeholder="Max" onchange="applyFilters()">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Anno</label>
-                        <div class="d-flex align-items-center">
-                            <input type="number" class="form-control me-2" id="filter-year-min" placeholder="Da" onchange="applyFilters()">
-                            <span class="mx-2">-</span>
-                            <input type="number" class="form-control ms-2" id="filter-year-max" placeholder="A" onchange="applyFilters()">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <button class="btn btn-outline-secondary" onclick="clearFilters()">
-                            <i class="fas fa-times"></i> Cancella Filtri
-                        </button>
-                        <button class="btn btn-primary ms-2" onclick="runSearch()">
-                            <i class="fas fa-play"></i> Esegui Scraping
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- KPIs -->
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="small">Auto Trovate</div>
-                        <div class="h3" id="kpi-total-cars">0</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-car fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="small">Prezzo Medio</div>
-                        <div class="h3" id="kpi-avg-price">€0</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-euro-sign fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="small">Prezzo Min/Max</div>
-                        <div class="h6" id="kpi-price-range">€0 - €0</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-chart-line fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <div class="small">Età Media</div>
-                        <div class="h3" id="kpi-avg-age">0 anni</div>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-calendar fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Charts -->
-<div class="row mb-4">
-    <div class="col-lg-8 mb-3">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-line"></i> Trend Prezzi
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="priceChart" height="100"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-4 mb-3">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-pie"></i> Distribuzione Alimentazione
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="fuelChart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Mileage Stats -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-tachometer-alt"></i> Statistiche per Chilometraggio
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
                     <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h6>0-50.000 km</h6>
-                            <div class="h4 text-primary" id="mileage-0-50k-price">€0</div>
-                            <small class="text-muted" id="mileage-0-50k-count">0 auto</small>
+                        <div class="kpi-card primary">
+                            <div class="kpi-header">
+                                <div>
+                                    <div class="kpi-label">0-50.000 km</div>
+                                    <div class="kpi-value" id="mileage-0-50k-price">€0</div>
+                                    <div class="kpi-change neutral">
+                                        <span id="mileage-0-50k-count">0 auto</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h6>50.000-100.000 km</h6>
-                            <div class="h4 text-success" id="mileage-50-100k-price">€0</div>
-                            <small class="text-muted" id="mileage-50-100k-count">0 auto</small>
+                        <div class="kpi-card success">
+                            <div class="kpi-header">
+                                <div>
+                                    <div class="kpi-label">50.000-100.000 km</div>
+                                    <div class="kpi-value" id="mileage-50-100k-price">€0</div>
+                                    <div class="kpi-change neutral">
+                                        <span id="mileage-50-100k-count">0 auto</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h6>100.000+ km</h6>
-                            <div class="h4 text-warning" id="mileage-100k-plus-price">€0</div>
-                            <small class="text-muted" id="mileage-100k-plus-count">0 auto</small>
+                        <div class="kpi-card warning">
+                            <div class="kpi-header">
+                                <div>
+                                    <div class="kpi-label">100.000+ km</div>
+                                    <div class="kpi-value" id="mileage-100k-plus-price">€0</div>
+                                    <div class="kpi-change neutral">
+                                        <span id="mileage-100k-plus-count">0 auto</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-icon">
+                                    <i class="fas fa-road"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Saved Searches -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-bookmark"></i> Ricerche Salvate
+        <!-- Saved Searches Management -->
+        <div class="card-modern fade-in">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-bookmark"></i>
+                    Gestione Ricerche Salvate
                 </h5>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal" onclick="resetSearchForm()">
-                    <i class="fas fa-plus"></i> Nuova Ricerca
+                <button class="btn-modern btn-primary-modern btn-sm-modern" 
+                        data-bs-toggle="modal" data-bs-target="#searchModal" onclick="resetSearchForm()">
+                    <i class="fas fa-plus"></i>
+                    Nuova Ricerca
                 </button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table-modern">
                         <thead>
                             <tr>
                                 <th>Nome</th>
-                                <th>Marca</th>
-                                <th>Modello</th>
-                                <th>Prezzo</th>
-                                <th>Anno</th>
+                                <th>Veicolo</th>
+                                <th class="col-optional">Filtri</th>
+                                <th>Risultati</th>
+                                <th class="col-optional">Ultimo Scraping</th>
                                 <th>Stato</th>
-                                <th>Ultima Modifica</th>
                                 <th>Azioni</th>
                             </tr>
                         </thead>
@@ -234,36 +474,39 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Cars Table -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-list"></i> Auto Trovate
+        <!-- Cars Data Table -->
+        <div class="card-modern fade-in">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-list"></i>
+                    Auto Trovate
+                    <span class="badge-modern badge-primary ms-2" id="cars-count">0</span>
                 </h5>
-                <div>
-                    <button class="btn btn-outline-primary btn-sm" onclick="exportData()">
-                        <i class="fas fa-download"></i> Esporta
+                <div class="d-flex gap-2">
+                    <button class="btn-modern btn-secondary-modern btn-sm-modern" onclick="refreshCarsData()">
+                        <i class="fas fa-refresh"></i>
+                        Aggiorna
+                    </button>
+                    <button class="btn-modern btn-accent-modern btn-sm-modern" onclick="exportCarsData()">
+                        <i class="fas fa-download"></i>
+                        Esporta CSV
                     </button>
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table-modern table-responsive-stack">
                         <thead>
                             <tr>
                                 <th>Marca</th>
                                 <th>Modello</th>
-                                <th>Anno</th>
+                                <th class="col-optional">Anno</th>
                                 <th>Km</th>
                                 <th>Prezzo</th>
-                                <th>Alimentazione</th>
-                                <th>Provincia</th>
-                                <th>Ultimo Aggiornamento</th>
+                                <th class="col-optional">Alimentazione</th>
+                                <th class="col-optional">Provincia</th>
+                                <th class="col-optional">Aggiornato</th>
                                 <th>Azioni</th>
                             </tr>
                         </thead>
@@ -272,25 +515,29 @@
                         </tbody>
                     </table>
                 </div>
-                <nav>
+                
+                <!-- Pagination -->
+                <nav aria-label="Navigazione pagine" class="mt-4">
                     <ul class="pagination justify-content-center" id="pagination">
                         <!-- Populated by JavaScript -->
                     </ul>
                 </nav>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="spinner-border text-primary mb-3" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                
+                <!-- No Data State -->
+                <div class="empty-state" id="no-cars-state" style="display: none;">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="empty-state-title">Nessuna Auto Trovata</div>
+                    <div class="empty-state-description">
+                        Non ci sono auto che corrispondono ai criteri di ricerca attuali. 
+                        Prova a modificare i filtri o a creare una nuova ricerca.
+                    </div>
+                    <button class="empty-state-action" onclick="resetFilters()">
+                        <i class="fas fa-filter"></i>
+                        Resetta Filtri
+                    </button>
                 </div>
-                <div id="loading-message">Caricamento in corso...</div>
             </div>
         </div>
     </div>
@@ -301,7 +548,147 @@
 <script>
 // Initialize dashboard when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚗 CarScraping Dashboard - Initializing...');
     initializeDashboard();
+    setupRealTimeUpdates();
+    initializeRangeSliders();
+    setupAdvancedFilters();
+    
+    // Initialize charts with placeholder data
+    initializeCharts();
+    
+    // Load initial data
+    loadDashboardData();
+    
+    console.log('✅ Dashboard initialized successfully');
+});
+
+// Real-time updates setup
+function setupRealTimeUpdates() {
+    // WebSocket connection would go here
+    // For now, we'll use polling
+    setInterval(updateRealTimeData, 30000); // Every 30 seconds
+}
+
+// Initialize range sliders using noUiSlider
+function initializeRangeSliders() {
+    // Price range slider
+    if (document.getElementById('filter-price-range')) {
+        noUiSlider.create(document.getElementById('filter-price-range'), {
+            start: [0, 100000],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 500000
+            },
+            format: {
+                to: function (value) {
+                    return Math.round(value);
+                },
+                from: function (value) {
+                    return Number(value);
+                }
+            }
+        });
+    }
+    
+    // Year range slider
+    if (document.getElementById('filter-year-range')) {
+        noUiSlider.create(document.getElementById('filter-year-range'), {
+            start: [2000, 2024],
+            connect: true,
+            range: {
+                'min': 1990,
+                'max': 2024
+            },
+            step: 1,
+            format: {
+                to: function (value) {
+                    return Math.round(value);
+                },
+                from: function (value) {
+                    return Number(value);
+                }
+            }
+        });
+    }
+    
+    // Mileage range slider
+    if (document.getElementById('filter-mileage-range')) {
+        noUiSlider.create(document.getElementById('filter-mileage-range'), {
+            start: [0, 200000],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 500000
+            },
+            step: 1000,
+            format: {
+                to: function (value) {
+                    return Math.round(value);
+                },
+                from: function (value) {
+                    return Number(value);
+                }
+            }
+        });
+    }
+}
+
+// Initialize Chart.js charts
+function initializeCharts() {
+    // Configure Chart.js defaults
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#e2e8f0';
+    
+    // Initialize each chart
+    initializePriceTrendChart();
+    initializePriceMileageChart();
+    initializeGeographicChart();
+    initializePriceHistogramChart();
+}
+
+// Theme toggle functionality
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        themeIcon.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        themeIcon.className = 'fas fa-sun';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Sidebar toggle for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.remove('show');
+    overlay.classList.remove('show');
+}
+
+// Load saved theme
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('theme-icon').className = 'fas fa-sun';
+    }
 });
 </script>
 {% endblock %}

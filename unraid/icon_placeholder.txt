@@ -1,0 +1,20 @@
+# CarScraping Icon Placeholder
+# 
+# This file represents where the icon.png should be placed.
+# The icon should be:
+# - 128x128 pixels
+# - PNG format
+# - Automotive themed (car, dashboard, or analytics related)
+# - Clean, professional design suitable for Unraid UI
+#
+# Suggested design elements:
+# - Car silhouette with dashboard/chart overlay
+# - Blue/orange color scheme matching app theme
+# - Simple, recognizable at small sizes
+#
+# To create the actual icon:
+# 1. Use image editing software (GIMP, Photoshop, etc.)
+# 2. Create 128x128px canvas
+# 3. Design automotive-themed icon
+# 4. Export as PNG
+# 5. Replace this file with icon.png
