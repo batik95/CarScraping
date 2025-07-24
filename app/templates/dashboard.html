@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Search Filters -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-filter"></i> Filtri Ricerca
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="filter-search" class="form-label">Ricerca Salvata</label>
+                        <select class="form-select" id="filter-search" onchange="applySearchFilter()">
+                            <option value="">Tutte le ricerche</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-brand" class="form-label">Marca</label>
+                        <select class="form-select" id="filter-brand" onchange="updateModels(); applyFilters()">
+                            <option value="">Tutte le marche</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-model" class="form-label">Modello</label>
+                        <select class="form-select" id="filter-model" onchange="applyFilters()">
+                            <option value="">Tutti i modelli</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-fuel" class="form-label">Alimentazione</label>
+                        <select class="form-select" id="filter-fuel" onchange="applyFilters()">
+                            <option value="">Tutte</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Prezzo (€)</label>
+                        <div class="d-flex align-items-center">
+                            <input type="number" class="form-control me-2" id="filter-price-min" placeholder="Min" onchange="applyFilters()">
+                            <span class="mx-2">-</span>
+                            <input type="number" class="form-control ms-2" id="filter-price-max" placeholder="Max" onchange="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Anno</label>
+                        <div class="d-flex align-items-center">
+                            <input type="number" class="form-control me-2" id="filter-year-min" placeholder="Da" onchange="applyFilters()">
+                            <span class="mx-2">-</span>
+                            <input type="number" class="form-control ms-2" id="filter-year-max" placeholder="A" onchange="applyFilters()">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Cancella Filtri
+                        </button>
+                        <button class="btn btn-primary ms-2" onclick="runSearch()">
+                            <i class="fas fa-play"></i> Esegui Scraping
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KPIs -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="small">Auto Trovate</div>
+                        <div class="h3" id="kpi-total-cars">0</div>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-car fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="small">Prezzo Medio</div>
+                        <div class="h3" id="kpi-avg-price">€0</div>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-euro-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="small">Prezzo Min/Max</div>
+                        <div class="h6" id="kpi-price-range">€0 - €0</div>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="small">Età Media</div>
+                        <div class="h3" id="kpi-avg-age">0 anni</div>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line"></i> Trend Prezzi
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="priceChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie"></i> Distribuzione Alimentazione
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="fuelChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mileage Stats -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tachometer-alt"></i> Statistiche per Chilometraggio
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h6>0-50.000 km</h6>
+                            <div class="h4 text-primary" id="mileage-0-50k-price">€0</div>
+                            <small class="text-muted" id="mileage-0-50k-count">0 auto</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h6>50.000-100.000 km</h6>
+                            <div class="h4 text-success" id="mileage-50-100k-price">€0</div>
+                            <small class="text-muted" id="mileage-50-100k-count">0 auto</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h6>100.000+ km</h6>
+                            <div class="h4 text-warning" id="mileage-100k-plus-price">€0</div>
+                            <small class="text-muted" id="mileage-100k-plus-count">0 auto</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Saved Searches -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bookmark"></i> Ricerche Salvate
+                </h5>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#searchModal" onclick="resetSearchForm()">
+                    <i class="fas fa-plus"></i> Nuova Ricerca
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Marca</th>
+                                <th>Modello</th>
+                                <th>Prezzo</th>
+                                <th>Anno</th>
+                                <th>Stato</th>
+                                <th>Ultima Modifica</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="searches-table">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cars Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list"></i> Auto Trovate
+                </h5>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="exportData()">
+                        <i class="fas fa-download"></i> Esporta
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Marca</th>
+                                <th>Modello</th>
+                                <th>Anno</th>
+                                <th>Km</th>
+                                <th>Prezzo</th>
+                                <th>Alimentazione</th>
+                                <th>Provincia</th>
+                                <th>Ultimo Aggiornamento</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cars-table">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <nav>
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- Populated by JavaScript -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="loading-message">Caricamento in corso...</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+});
+</script>
+{% endblock %}
