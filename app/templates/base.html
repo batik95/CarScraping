@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CarScraping Dashboard{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car"></i> CarScraping
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">
+                            <i class="fas fa-search"></i> Nuova Ricerca
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Aggiorna
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="navbar-text">
+                            <i class="fas fa-clock"></i> Ultimo aggiornamento: <span id="last-update">Mai</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid mt-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Search Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-search"></i> <span id="modal-title">Nuova Ricerca</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="searchForm">
+                        <input type="hidden" id="search-id" name="id">
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="search-name" class="form-label">Nome Ricerca *</label>
+                                <input type="text" class="form-control" id="search-name" name="name" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="search-brand" class="form-label">Marca</label>
+                                <select class="form-select" id="search-brand" name="brand">
+                                    <option value="">Tutte le marche</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="search-model" class="form-label">Modello</label>
+                                <select class="form-select" id="search-model" name="model">
+                                    <option value="">Tutti i modelli</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="search-fuel-type" class="form-label">Alimentazione</label>
+                                <select class="form-select" id="search-fuel-type" name="fuel_type">
+                                    <option value="">Tutte</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="search-transmission" class="form-label">Cambio</label>
+                                <select class="form-select" id="search-transmission" name="transmission">
+                                    <option value="">Tutti</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="search-body-type" class="form-label">Carrozzeria</label>
+                                <select class="form-select" id="search-body-type" name="body_type">
+                                    <option value="">Tutte</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Prezzo (€)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-price-min" name="price_min" placeholder="Min">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-price-max" name="price_max" placeholder="Max">
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <input type="range" class="form-range" id="price-range" min="0" max="100000" step="1000">
+                            </div>
+                        </div>
+
+                        <!-- Year Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Anno</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-year-min" name="year_min" placeholder="Da">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-year-max" name="year_max" placeholder="A">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mileage Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Chilometraggio (km)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-mileage-min" name="mileage_min" placeholder="Min">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-mileage-max" name="mileage_max" placeholder="Max">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Power Range -->
+                        <div class="mb-3">
+                            <label class="form-label">Potenza (CV)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-power-min" name="power_min" placeholder="Min">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="search-power-max" name="power_max" placeholder="Max">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="search-color" class="form-label">Colore</label>
+                                <select class="form-select" id="search-color" name="color">
+                                    <option value="">Tutti i colori</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="search-province" class="form-label">Provincia</label>
+                                <select class="form-select" id="search-province" name="province">
+                                    <option value="">Tutte le province</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSearch()">Salva Ricerca</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
