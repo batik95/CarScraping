@@ -4,10 +4,11 @@ services:
   app:
     build: .
     ports:
-      - "8000:8000"
+      - "${WEB_PORT:-8787}:8787"
     environment:
       - DATABASE_URL=postgresql://carscraping:password@db:5432/carscraping
       - REDIS_URL=redis://redis:6379
+      - WEB_PORT=8787
     depends_on:
       - db
       - redis

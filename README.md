@@ -102,7 +102,7 @@ CarScraping/
    ```
 
 4. **Accesso dashboard**
-   - Apri http://localhost:8000 nel browser
+   - Apri http://localhost:8787 nel browser
    - L'applicazione si inizializzerà automaticamente
 
 ### Setup per Sviluppo
@@ -131,7 +131,7 @@ CarScraping/
 
 4. **Avvio applicazione**
    ```bash
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8787
    ```
 
 ## Utilizzo
@@ -202,6 +202,22 @@ LOG_LEVEL=INFO
 
 ## Deployment su Unraid
 
+CarScraping include supporto completo per deployment su Unraid tramite Community Applications.
+
+### Installazione Rapida
+1. **Community Applications**: Cerca "CarScraping" e clicca Install
+2. **Configurazione**: Imposta porte e directory secondo le tue preferenze
+3. **Accesso**: Web interface disponibile su porta 8787
+
+### Template Unraid
+Il template completo è disponibile in `unraid/CarScraping.xml` con:
+- Configurazione automatica porte e volumi
+- Variabili d'ambiente pre-configurate
+- Supporto database esterno opzionale
+- Backup e recovery procedure
+
+Vedi `unraid/README-Unraid.md` per la guida completa di installazione e configurazione.
+
 ### Docker Compose per Unraid
 ```yaml
 version: '3.8'
@@ -210,9 +226,10 @@ services:
     image: carscraping:latest
     container_name: CarScraping
     ports:
-      - "8000:8000"
+      - "8787:8787"
     environment:
       - DATABASE_URL=postgresql://carscraping:password@carscraping-db:5432/carscraping
+      - WEB_PORT=8787
     volumes:
       - /mnt/user/appdata/carscraping/logs:/app/logs
     depends_on:

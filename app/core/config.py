@@ -5,6 +5,10 @@ import os
 class Settings(BaseSettings):
     """Application settings"""
     
+    # Web Server
+    web_port: int = 8787
+    web_host: str = "0.0.0.0"
+    
     # Database
     database_url: str = "postgresql://carscraping:password@localhost:5432/carscraping"
     
