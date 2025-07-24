@@ -9,6 +9,20 @@
     
     <title>{% block title %}CarScraping - Advanced Car Analytics Dashboard{% endblock %}</title>
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', path='/manifest.json') }}">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', path='/images/icons/icon-192x192.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CarScraping">
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="msapplication-TileColor" content="#1e3a8a">
+    <meta name="msapplication-config" content="{{ url_for('static', path='/browserconfig.xml') }}">
+    
     <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -498,7 +512,109 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
             crossorigin="anonymous"></script>
     
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker registered successfully:', registration.scope);
+                        
+                        // Listen for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    showUpdateAvailable(registration);
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+                
+                // Listen for messages from service worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    const { type, url } = event.data;
+                    if (type === 'DATA_UPDATE') {
+                        // Handle real-time data updates
+                        console.log('📡 Data updated:', url);
+                    }
+                });
+            });
+        }
+        
+        // Show update available notification
+        function showUpdateAvailable(registration) {
+            if (window.showToast) {
+                const toast = document.createElement('div');
+                toast.className = 'toast-modern info';
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <div class="toast-title">Aggiornamento Disponibile</div>
+                        <div class="toast-message">Una nuova versione dell'app è disponibile.</div>
+                        <button class="btn-modern btn-sm-modern btn-primary-modern mt-2" onclick="updateApp()">
+                            Aggiorna Ora
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('toast-container').appendChild(toast);
+            }
+            
+            window.updateApp = () => {
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                }
+            };
+        }
+        
+        // Install prompt for PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button after a delay
+            setTimeout(() => {
+                showInstallPrompt();
+            }, 60000); // Show after 1 minute
+        });
+        
+        function showInstallPrompt() {
+            if (deferredPrompt && window.showToast) {
+                const toast = document.createElement('div');
+                toast.className = 'toast-modern success';
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <div class="toast-title">Installa App</div>
+                        <div class="toast-message">Installa CarScraping per un accesso più rapido.</div>
+                        <button class="btn-modern btn-sm-modern btn-success-modern mt-2" onclick="installApp()">
+                            Installa
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('toast-container').appendChild(toast);
+            }
+        }
+        
+        window.installApp = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('PWA install outcome:', outcome);
+                deferredPrompt = null;
+            }
+        };
+    </script>
+    
     <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', path='/js/main.js') }}" defer></script>
     <script src="{{ url_for('static', path='/js/app.js') }}" defer></script>
     
     {% block scripts %}{% endblock %}
