@@ -1,32 +1,46 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>CarScraping</Name>
-  <Repository>batik95/carscraping</Repository>
+  <Repository>batik95/carscraping:unraid</Repository>
   <Registry>https://hub.docker.com/r/batik95/carscraping</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/batik95/CarScraping</Support>
+  <Support>https://github.com/batik95/CarScraping/issues</Support>
   <Project>https://github.com/batik95/CarScraping</Project>
-  <Overview>Car Tracking Tool per monitorare auto su AutoScout24.it con dashboard analytics avanzata</Overview>
-  <Category>Tools:</Category>
+  <Overview>Car Tracking Tool per monitorare auto specifiche su AutoScout24.it con dashboard analytics. Include PostgreSQL e Redis integrati per funzionamento all-in-one su Unraid senza dipendenze esterne.</Overview>
+  <Category>Tools: Productivity:</Category>
   <WebUI>http://[IP]:[PORT:8787]</WebUI>
-  <TemplateURL/>
+  <TemplateURL>https://raw.githubusercontent.com/batik95/CarScraping/main/unraid/CarScraping.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/batik95/CarScraping/main/unraid/icon.png</Icon>
-  <ExtraParams/>
+  <ExtraParams>--shm-size=256m</ExtraParams>
   <PostArgs/>
   <CPUset/>
   <DateInstalled/>
-  <DonateText/>
-  <DonateLink/>
-  <Requires/>
-  <Config Name="Web Port" Target="8787" Default="8787" Mode="tcp" Description="Porta per accesso web interface" Type="Port" Display="always" Required="true" Mask="false">8787</Config>
-  <Config Name="Database Port" Target="5432" Default="" Mode="tcp" Description="Porta PostgreSQL (opzionale se database esterno)" Type="Port" Display="advanced" Required="false" Mask="false"/>
-  <Config Name="Config Directory" Target="/config" Default="/mnt/user/appdata/carscraping/config" Mode="rw" Description="Directory configurazione app" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/config</Config>
-  <Config Name="Data Directory" Target="/data" Default="/mnt/user/appdata/carscraping/data" Mode="rw" Description="Directory database PostgreSQL" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/data</Config>
-  <Config Name="Logs Directory" Target="/logs" Default="/mnt/user/appdata/carscraping/logs" Mode="rw" Description="Directory log applicazione" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/logs</Config>
-  <Config Name="Scraping Interval" Target="SCRAPING_INTERVAL" Default="24h" Mode="" Description="Intervallo scraping (es: 24h, 12h, 6h)" Type="Variable" Display="always" Required="false" Mask="false">24h</Config>
+  <DonateText>Se ti piace questo progetto, considera una donazione per supportare lo sviluppo!</DonateText>
+  <DonateLink>https://github.com/sponsors/batik95</DonateLink>
+  <Requires>Unraid 6.9.0 o superiore</Requires>
+  <Changes>
+### 2024-01-XX
+- Initial Unraid release with all-in-one container
+- Embedded PostgreSQL and Redis for zero dependencies
+- Automatic database initialization and migrations
+- Health checks and comprehensive logging
+- Complete Unraid Community Applications integration
+  </Changes>
+  <Config Name="WebUI Port" Target="8787" Default="8787" Mode="tcp" Description="Porta per accesso web interface principale" Type="Port" Display="always" Required="true" Mask="false">8787</Config>
+  <Config Name="Database Port (Optional)" Target="5432" Default="" Mode="tcp" Description="Porta PostgreSQL per accesso esterno (opzionale)" Type="Port" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Redis Port (Optional)" Target="6379" Default="" Mode="tcp" Description="Porta Redis per accesso esterno (opzionale)" Type="Port" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Configuration" Target="/config" Default="/mnt/user/appdata/carscraping/config" Mode="rw" Description="Directory configurazione applicazione" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/config</Config>
+  <Config Name="Database Data" Target="/data" Default="/mnt/user/appdata/carscraping/data" Mode="rw" Description="Directory dati PostgreSQL e Redis" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/data</Config>
+  <Config Name="Application Logs" Target="/logs" Default="/mnt/user/appdata/carscraping/logs" Mode="rw" Description="Directory log applicazione e servizi" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/carscraping/logs</Config>
+  <Config Name="Scraping Interval" Target="SCRAPING_INTERVAL" Default="24" Mode="" Description="Intervallo scraping in ore (6, 12, 24, 48)" Type="Variable" Display="always" Required="false" Mask="false">24</Config>
   <Config Name="Log Level" Target="LOG_LEVEL" Default="INFO" Mode="" Description="Livello logging (DEBUG, INFO, WARNING, ERROR)" Type="Variable" Display="advanced" Required="false" Mask="false">INFO</Config>
-  <Config Name="Database Host" Target="DB_HOST" Default="localhost" Mode="" Description="Host database PostgreSQL" Type="Variable" Display="advanced" Required="false" Mask="false">localhost</Config>
+  <Config Name="Debug Mode" Target="DEBUG" Default="false" Mode="" Description="Abilita modalità debug (true/false)" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Max Retries" Target="MAX_RETRIES" Default="3" Mode="" Description="Numero massimo retry per scraping fallito" Type="Variable" Display="advanced" Required="false" Mask="false">3</Config>
+  <Config Name="Request Delay" Target="REQUEST_DELAY" Default="1.0" Mode="" Description="Delay tra richieste HTTP in secondi" Type="Variable" Display="advanced" Required="false" Mask="false">1.0</Config>
+  <Config Name="External Database URL" Target="DATABASE_URL" Default="" Mode="" Description="URL database esterno (opzionale, lascia vuoto per embedded)" Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <Config Name="User ID" Target="PUID" Default="99" Mode="" Description="User ID per file permissions" Type="Variable" Display="advanced" Required="false" Mask="false">99</Config>
+  <Config Name="Group ID" Target="PGID" Default="100" Mode="" Description="Group ID per file permissions" Type="Variable" Display="advanced" Required="false" Mask="false">100</Config>
 </Container>

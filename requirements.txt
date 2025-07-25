@@ -8,6 +8,9 @@ sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
 alembic==1.12.1
 
+# Cache
+redis==5.0.1
+
 # Scraping
 requests==2.31.0
 beautifulsoup4==4.12.2
