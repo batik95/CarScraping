@@ -15,8 +15,9 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Check if Docker Compose is available
-if ! command -v docker-compose &> /dev/null && ! command -v docker compose &> /dev/null; then
+if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
     echo "❌ Docker Compose is not installed. Please install Docker Compose first."
+    echo "   You can install it as a standalone tool (docker-compose) or as a Docker plugin (docker compose)."
     exit 1
 fi
 
@@ -37,8 +38,11 @@ echo "This will start PostgreSQL, Redis, and the main application."
 
 if command -v docker-compose &> /dev/null; then
     COMPOSE_CMD="docker-compose"
-else
+elif docker compose version &> /dev/null; then
     COMPOSE_CMD="docker compose"
+else
+    echo "❌ Unable to determine Docker Compose command."
+    exit 1
 fi
 
 # Pull images and start services
